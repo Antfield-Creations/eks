@@ -1,0 +1,24 @@
+BINDIR ?= ~/.local/bin
+INSTALLDIR ?= ~/.local/aws-cli
+
+tools: kubectl helm aws-cli
+
+kubectl:
+	# Install kubectl
+	which kubectl || curl -fSL "https://dl.k8s.io/release/$(shell curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o ${BINDIR}/kubectl
+	which kubectl || chmod +x ${BINDIR}/kubectl
+	kubectl version --client
+
+helm:
+	# Install helm
+	which helm || USE_SUDO=false HELM_INSTALL_DIR=${BINDIR} curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+	helm version
+
+aws-cli:
+	which aws || { \
+		curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip" && \
+		unzip /tmp/awscliv2.zip -d /tmp/ && \
+		/tmp/aws/install --bin-dir ${BINDIR} --install-dir ${INSTALLDIR} --update && \
+		rm -r /tmp/aws; \
+	}
+	aws --version
