@@ -1,7 +1,7 @@
 BINDIR ?= ~/.local/bin
 INSTALLDIR ?= ~/.local/aws-cli
 
-tools: kubectl helm aws-cli
+tools: kubectl helm aws-cli eksctl
 
 kubectl:
 	# Install kubectl
@@ -22,3 +22,11 @@ aws-cli:
 		rm -r /tmp/aws; \
 	}
 	aws --version
+
+aws-login:
+	aws configure
+
+eksctl:
+	which eksctl || curl --fail --location --show-error "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(shell uname -s)_amd64.tar.gz" | tar xz -C /tmp
+	which eksctl || mv /tmp/eksctl ${BINDIR}
+	eksctl version
