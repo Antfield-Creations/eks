@@ -7,6 +7,7 @@ kubectl:
 	# Install kubectl
 	which kubectl || curl -fSL "https://dl.k8s.io/release/$(shell curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o ${BINDIR}/kubectl
 	which kubectl || chmod +x ${BINDIR}/kubectl
+	# Since we may not have a cluster yet, we ask only the kubectl client side version
 	kubectl version --client
 
 helm:
