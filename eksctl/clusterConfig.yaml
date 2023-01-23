@@ -1,0 +1,48 @@
+---
+# Adapted from https://eksctl.io/usage/creating-and-managing-clusters/
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: antfield-cluster
+  region: eu-west-1
+
+vpc:
+  subnets:
+    private:
+      eu-west-1a: { id: subnet-0ff156e0c4a6d300c }
+      eu-west-1b: { id: subnet-0549cdab573695c03 }
+      eu-west-1c: { id: subnet-0426fb4a607393184 }
+
+addons:
+  - name: vpc-cni
+    attachPolicy:
+      Statement:
+        - Effect: Allow
+          Action:
+            - ec2:AssignPrivateIpAddresses
+            - ec2:AttachNetworkInterface
+            - ec2:CreateNetworkInterface
+            - ec2:DeleteNetworkInterface
+            - ec2:DescribeInstances
+            - ec2:DescribeTags
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DescribeInstanceTypes
+            - ec2:DetachNetworkInterface
+            - ec2:ModifyNetworkInterfaceAttribute
+            - ec2:UnassignPrivateIpAddresses
+          Resource: '*'
+
+managedNodeGroups:
+  - name: service-pool-1
+    labels:
+      role: workers
+    instanceType: t3.medium
+    desiredCapacity: 2
+    privateNetworking: true
+  - name: machine-learning-pool-1
+    labels:
+      role: ml
+    instanceType: m5.2xlarge
+    desiredCapacity: 2
+    privateNetworking: true
